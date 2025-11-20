@@ -1,4 +1,4 @@
-# 🩺 Breast Cancer Prediction API (FastAPI + scikit-learn)
+# 🩺 Breast Cancer Prediction API
 
 Production-style **ML inference service** for the **Breast Cancer Wisconsin (Diagnostic)** dataset, built with:
 
@@ -86,7 +86,7 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-**Train the model (Optional)**
+**Train the model (Optional, the model has already been trained)**
 ```powershell
 python -m model.train_pipeline
 ```
@@ -149,7 +149,15 @@ The API returns one object per input row:
 
 ---
 ## 🧩 Example Requests (PowerShell)
-### 1) JSON – single row (30 features)
+### 1) Health check
+```powershell
+curl.exe -s http://localhost:8000/health
+```
+PowerShell will show output, e.g.:
+```powershell
+{"status":"ok"}
+```
+### 2) JSON – single row (30 features)
 ```powershell
 $body = @{
     data = @(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,
@@ -163,7 +171,7 @@ $response = Invoke-RestMethod -Uri "http://localhost:8000/predict" -Method POST 
 $response.results
 $response.latency_ms
 ```
-### 2) JSON – multiple rows
+### 3) JSON – multiple rows
 ```powershell
 $body = @{
     data = @(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,
@@ -187,21 +195,27 @@ index pred proba
 ----- ---- -----
     0    1 {0.12, 0.88}
     1    0 {0.90, 0.10}
+
+23.029
 ```
 
 ---
 ## 📄 CSV Testing
-### Generate sample CSV from the real dataset (optional)
+### Generate sample CSV from the real dataset (optional, test_samples.csv has already been generated)
 Use the helper script:
 ```powershell
 python -m model.make_test_csv
 ```
 This will save them as: `data/samples/test_samples.csv`
 
-### Send CSV with curl (Windows or Linux)
+### Send CSV with curl
 ```powershell
 curl.exe -X POST "http://localhost:8000/predict" `
   -F "file=@data/samples/test_samples.csv;type=text/csv"
+```
+PowerShell will show output, e.g.:
+```json
+{"results":[{"index":0,"pred":0,"proba":[0.94,0.06]},{"index":1,"pred":0,"proba":[1.0,0.0]},{"index":2,"pred":0,"proba":[1.0,0.0]},{"index":3,"pred":0,"proba":[0.9,0.1]},{"index":4,"pred":0,"proba":[0.93,0.07]},{"index":5,"pred":0,"proba":[0.93,0.07]},{"index":6,"pred":0,"proba":[1.0,0.0]},{"index":7,"pred":0,"proba":[0.99,0.01]},{"index":8,"pred":0,"proba":[1.0,0.0]},{"index":9,"pred":0,"proba":[0.95,0.05]}],"latency_ms":9.25}
 ```
 
 ---
@@ -250,7 +264,7 @@ Then open:
 ## 🧰 Makefile Targets (Linux/macOS)
 If you have `make` available:
 ```bash
-# Train model (model/train_pipeline.py)
+# Train model (Optional, the model has already been trained)
 make train
 
 # Build Docker image
@@ -274,7 +288,7 @@ make report
 
 On Windows (PowerShell), you can call the underlying commands directly, e.g.:
 ```powershell
-# Train (Optional)
+# Train (Optional, the model has already been trained)
 (.venv) python -m model.train_pipeline
 
 # Build image
@@ -315,6 +329,3 @@ Possible future extensions:
 
 ---
 If you find this project useful or educational, feel free to ⭐ the repo or fork it and plug in your own models 🚀
-```makefile
-::contentReference[oaicite:0]{index=0}
-```
