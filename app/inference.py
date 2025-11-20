@@ -12,6 +12,7 @@ Inference utilities for the breast-cancer prediction service.
 
 import time
 import joblib
+import json
 from pathlib import Path
 
 from .pre_process import from_json_payload, from_csv_bytes
@@ -68,9 +69,27 @@ def predict_from_json(payload: list) -> dict:
 
     latency_ms = round((time.time() - t0) * 1000, 3)
 
-    _pred_logger.info({"n": len(X), "latency_ms": latency_ms})
+    _pred_logger.info(json.dumps({"n": len(X), "latency_ms": latency_ms}))
 
-    return {"pred": y, "proba": p, "latency_ms": latency_ms}
+    results = []
+    if p is not None:
+        for i, (label, prob_row) in enumerate(zip(y, p)):
+            results.append({
+                "index": i,
+                "pred": label,
+                "proba": prob_row,
+            })
+    else:
+        for i, label in enumerate(y):
+            results.append({
+                "index": i,
+                "pred": label,
+            })
+
+    return {
+        "results": results,
+        "latency_ms": latency_ms,
+    }
 
 
 def predict_from_csv(file_bytes: bytes) -> dict:
@@ -100,6 +119,24 @@ def predict_from_csv(file_bytes: bytes) -> dict:
 
     latency_ms = round((time.time() - t0) * 1000, 3)
 
-    _pred_logger.info({"n": len(X), "latency_ms": latency_ms})
+    _pred_logger.info(json.dumps({"n": len(X), "latency_ms": latency_ms}))
 
-    return {"pred": y, "proba": p, "latency_ms": latency_ms}
+    results = []
+    if p is not None:
+        for i, (label, prob_row) in enumerate(zip(y, p)):
+            results.append({
+                "index": i,
+                "pred": label,
+                "proba": prob_row,
+            })
+    else:
+        for i, label in enumerate(y):
+            results.append({
+                "index": i,
+                "pred": label,
+            })
+
+    return {
+        "results": results,
+        "latency_ms": latency_ms,
+    }

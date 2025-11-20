@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from typing import List
 
-N_FEATURES = 23
+N_FEATURES = 30  # Number of features expected by the model
 
 def clean_array(arr: np.ndarray) -> np.ndarray:
     """
