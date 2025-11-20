@@ -6,3 +6,4 @@ numpy
 joblib
 pydantic
 python-multipart
+pytest
