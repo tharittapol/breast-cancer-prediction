@@ -4,7 +4,7 @@ CONTAINER=breast-cancer-prediction
 .PHONY: train build run stop logs test report
 
 train:
-\tpython -m model.train
+\tpython -m model.train_pipeline
 
 build:
 \tdocker build -t $(IMAGE) .
